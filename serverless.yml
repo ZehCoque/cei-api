@@ -1,4 +1,4 @@
-service: finance-backtest
+service: stockmania
 
 provider:
   name: aws
@@ -11,29 +11,76 @@ provider:
   environment:
     SESSION_NAME: ${self:service}-${opt:stage, self:provider.stage}
 
-  iamRoleStatements:
-    - Effect: Allow
-      Action:
-        - events:DescribeRule
-        - events:EnableRule
-        - events:PutRule
-        - events:ListRules
-        - events:DisableRule
-        - events:PutTargets
-      Resource: "*"
-    - Effect: Allow
-      Action: 
-        - lambda:InvokeAsync
-        - lambda:InvokeFunction
-      Resource: "*"
-
 functions:
-  backtest:
+  getWalletOptions:
     timeout: 10
     memorySize: 512
-    handler: src/backtester.handler
+    handler: src/cei.getWalletOptions
+    package:
+      patterns:
+        - src/cei.js
     events:
     - http:
-        path: backtest
-        method: post
+        path: cei/wallet-options
+        method: get
+        cors: true
+  getWallet:
+    timeout: 10
+    memorySize: 512
+    handler: src/cei.getWallet
+    package:
+      patterns:
+        - src/cei.js
+    events:
+    - http:
+        path: cei/wallet
+        method: get
+        cors: true
+  getStockHistory:
+    timeout: 10
+    memorySize: 512
+    handler: src/cei.getStockHistory
+    package:
+      patterns:
+        - src/cei.js
+    events:
+    - http:
+        path: cei/stock-history
+        method: get
+        cors: true     
+  getStockHistoryOptions:
+    timeout: 10
+    memorySize: 512
+    handler: src/cei.getStockHistoryOptions
+    package:
+      patterns:
+        - src/cei.js
+    events:
+    - http:
+        path: cei/stock-history-options
+        method: get
+        cors: true    
+  getDividends:
+    timeout: 10
+    memorySize: 512
+    handler: src/cei.getDividends
+    package:
+      patterns:
+        - src/cei.js
+    events:
+    - http:
+        path: cei/dividends
+        method: get
+        cors: true
+  getTreasures:
+    timeout: 10
+    memorySize: 512
+    handler: src/cei.getTreasures
+    package:
+      patterns:
+        - src/cei.js
+    events:
+    - http:
+        path: cei/treasures
+        method: get
         cors: true
